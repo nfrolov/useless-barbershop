@@ -1,0 +1,17 @@
+doctype html
+html(lang="en")
+  head
+    title Barbershop
+    link(rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css")
+  body
+    nav.navbar.navbar-default
+      .container
+        .navbar-header
+          .navbar-brand Barbershop
+        if user
+          a.btn.btn-danger.navbar-btn.navbar-right(href="/signout") Sign out
+          p.navbar-text.navbar-right Signed in as #{user.username}
+        else
+          a.btn.btn-default.navbar-btn.navbar-right(href="/signin") Sign in
+    .container
+      block content
