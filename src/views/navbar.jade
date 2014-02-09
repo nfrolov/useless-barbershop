@@ -1,0 +1,6 @@
+ul.nav.navbar-nav
+  if user && user.role == 'admin'
+    li: a(href="/services") Services
+    li: a(href="/workers") Workers
+    li: a(href="/appointments") Appointments
+    li: a(href="/clients") Clients

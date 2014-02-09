@@ -8,6 +8,7 @@ html(lang="en")
       .container
         .navbar-header
           .navbar-brand Barbershop
+        include navbar
         if user
           a.btn.btn-danger.navbar-btn.navbar-right(href="/signout") Sign out
           p.navbar-text.navbar-right Signed in as #{user.name}
