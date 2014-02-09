@@ -1,0 +1,18 @@
+extends ../layout
+block content
+  h1 Edit: #{service.name}
+  if errors && errors.length
+    .alert.alert-danger
+      ul
+        each error in errors
+          li= error
+  form(action="/services/" + service.id method="post")
+    input(type="hidden" name="_method" value="put")
+    .form-group
+      label.control-label(for="input-name") Name
+      input.form-control#input-name(name="name" value=service.name)
+    .form-group
+      label.control-label(for="input-price") Price
+      input.form-control#input-price(name="price" value=service.price)
+    .form-group
+      button.btn.btn-primary(type="submit") Save

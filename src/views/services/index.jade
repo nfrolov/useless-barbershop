@@ -1,0 +1,23 @@
+extends ../layout
+block content
+  h1 Services
+    a.btn.btn-primary.btn-sm(href="/services/new") Create new
+  if services.length
+    table.table.table-striped
+      thead
+        tr
+          th Name
+          th(style="width:10%") Price
+          th(style="width:1%")
+      tbody
+        each service in services
+          tr
+            td
+              a(href="/services/" + service.id + "/edit")= service.name
+            td= service.price
+            td
+              form.form-inline(action="/services/" + service.id method="post")
+                input(type="hidden" name="_method" value="delete")
+                button.btn.btn-danger.btn-xs(type="submit") Delete
+  else
+    .alert.alert-info Service list is empty
