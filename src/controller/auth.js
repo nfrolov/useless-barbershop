@@ -28,6 +28,7 @@ module.exports = function (app) {
             password = req.body.password;
 
         dao.findByUsername(username).then(function (user) {
+            if (!user) return false;
             return when.promise(function (resolve, reject) {
                 bcrypt.compare(password, user.password, function (err, matches) {
                     if (err) return reject(err);
