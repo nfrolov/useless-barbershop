@@ -10,7 +10,7 @@ html(lang="en")
           .navbar-brand Barbershop
         if user
           a.btn.btn-danger.navbar-btn.navbar-right(href="/signout") Sign out
-          p.navbar-text.navbar-right Signed in as #{user.username}
+          p.navbar-text.navbar-right Signed in as #{user.name}
         else
           a.btn.btn-default.navbar-btn.navbar-right(href="/signin") Sign in
     .container
