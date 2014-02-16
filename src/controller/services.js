@@ -1,17 +1,8 @@
 var when = require('when'),
-    serviceDao = require('../dao/service');
+    serviceDao = require('../dao/service'),
+    firewall = require('../util/firewall');
 
 module.exports = function (app) {
-
-    function firewall(role, cb) {
-        return function (req, res) {
-            if (req.user && role === req.user.role) {
-                cb(req, res);
-            } else {
-                res.status(403).render('auth/denied');
-            }
-        };
-    }
 
     function createService(params, id) {
         var service = {};
