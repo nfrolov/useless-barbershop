@@ -1,0 +1,21 @@
+extends ../layout
+block content
+  h1 Workers
+    a.btn.btn-primary.btn-sm(href="/workers/new") Create new
+  if workers.length
+    table.table.table-striped
+      thead
+        tr
+          th Name
+          th(style="width:1%")
+      tbody
+        each worker in workers
+          tr
+            td
+              a(href="/workers/" + worker.id + "/edit")= worker.name
+            td
+              form.form-inline(action="/workers/" + worker.id method="post")
+                input(type="hidden" name="_method" value="delete")
+                button.btn.btn-danger.btn-xs(type="submit") Delete
+  else
+    .alert.alert-info No workers

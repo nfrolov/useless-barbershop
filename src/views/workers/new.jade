@@ -1,0 +1,36 @@
+extends ../layout
+block content
+  h1 Create new worker
+  if errors && errors.length
+    .alert.alert-danger
+      ul
+        each error in errors
+          li= error
+  form(action="/workers" method="post")
+    fieldset
+      legend Account
+      .form-group
+        label.control-label(for="input-username") Username
+        input.form-control#input-username(name="username" value=worker.username)
+      .form-group
+        label.control-label(for="input-password") Password
+        input.form-control#input-password(name="password" type="password" value=worker.password)
+    fieldset
+      legend Worker information
+      .form-group
+        label.control-label(for="input-name") Name
+        input.form-control#input-name(name="name" value=worker.name)
+      .checkbox
+        label
+          input(type="checkbox" name="admin" value="1" checked=('admin' === worker.role))
+          | Grant admin rights
+    fieldset
+      legend Abilities
+      for service in services
+        .checkbox
+          label
+            input(type="checkbox" name="abilities[]" value=service.id checked=(-1 !== worker.abilities.indexOf(service.id)))
+            = service.name
+    fieldset
+      .form-group
+        button.btn.btn-primary(type="submit") Create

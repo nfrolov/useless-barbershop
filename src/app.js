@@ -13,6 +13,7 @@ app.use(express.static(__dirname + '/../public'));
 require('./controller/auth')(app);
 require('./controller/main')(app);
 require('./controller/services')(app);
+require('./controller/workers')(app);
 require('./controller/test')(app);
 
 module.exports = app;
