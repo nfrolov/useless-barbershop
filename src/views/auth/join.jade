@@ -1,0 +1,30 @@
+extends ../layout
+block content
+  .row
+    .col-md-6.col-md-offset-3
+      if errors && errors.length
+        .alert.alert-danger
+          ul
+            each error in errors
+              li= error
+      form.form-horizontal(action="/join" method="post")
+        .form-group
+          label.control-label.col-md-3(for="username") Username
+          .col-md-9
+            input#username.form-control(name="username" value=client.username)
+        .form-group
+          label.control-label.col-md-3(for="password") Password
+          .col-md-9
+            input#password.form-control(type="password" name="password")
+        .form-group
+          label.control-label.col-md-3(for="name") Name
+          .col-md-9
+            input#name.form-control(name="name" value=client.name)
+        .form-group
+          label.control-label.col-md-3(for="phone") Phone
+          .col-md-9
+            input#phone.form-control(name="phone" value=client.phone)
+        .form-group
+          .col-md-offset-3.col-md-9
+            button.btn.btn-primary Join
+
