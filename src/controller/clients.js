@@ -1,5 +1,7 @@
 var when = require('when'),
-    clientDao = require('../dao/client');
+    bcrypt = require('bcrypt'),
+    clientDao = require('../dao/client'),
+    firewall = require('../util/firewall');
 
 module.exports = function (app) {
 
@@ -9,21 +11,21 @@ module.exports = function (app) {
 
         client.id = id || undefined;
         client.username = params.username || '';
-        client.password = params.password || '';
+        client.password = params.password || undefined;
         client.name = params.name || '';
         client.phone = params.phone || '';
 
         return client;
     }
 
-    function validateClient(client) {
+    function validateClient(client, passwordRequired) {
         return when.promise(function (resolve, reject) {
             var errors = [];
 
             if (0 === client.username.length) {
                 errors.push('Username is mandatory');
             }
-            if (0 === client.password.length) {
+            if (passwordRequired && (!client.password || 0 === client.password.length)) {
                 errors.push('Password is mandatory');
             }
             if (0 === client.name.length) {
@@ -44,6 +46,96 @@ module.exports = function (app) {
         };
     }
 
+    app.get('/clients', firewall(['admin', 'worker'], function (req, res) {
+        clientDao.findAll().then(function (clients) {
+            res.render('clients/index', {
+                clients: clients,
+                user: req.user
+            });
+        });
+    }));
+
+    app.get('/clients/new', firewall(['admin', 'worker'], function (req, res) {
+        res.render('clients/new', {
+            client: createClient(),
+            user: req.user
+        });
+    }));
+
+    app.post('/clients', firewall(['admin', 'worker'], function (req, res) {
+        var client = createClient(req.body);
+
+        validateClient(client, true).then(function (errors) {
+            if (errors.length) {
+                res.render('clients/new', {
+                    errors: errors,
+                    client: client,
+                    user: req.user
+                });
+            } else {
+                return when.promise(function (resolve, reject) {
+                    bcrypt.hash(client.password, 8, function (err, hash) {
+                        if (err) return reject(err);
+                        resolve(hash);
+                    });
+                }).then(function (hash) {
+                    client.password = hash;
+                    return clientDao.insert(client);
+                }).then(function () {
+                    res.redirect('/clients');
+                });
+            }
+        }).catch(handleError(res));
+    }));
+
+    app.del('/clients/:id', firewall(['admin', 'worker'], function (req, res) {
+        clientDao.delete(req.params.id).then(function () {
+            res.redirect('/clients');
+        }).catch(handleError(res));
+    }));
+
+    app.get('/clients/:id/edit', firewall(['admin', 'worker'], function (req, res) {
+        clientDao.find(req.params.id).then(function (client) {
+            if (!client) {
+                res.send(404, 'Client not found');
+            } else {
+                client.password = '';
+                res.render('clients/edit', {
+                    client: client,
+                    user: req.user
+                });
+            }
+        }).catch(handleError(this));
+    }));
+
+
+    app.put('/clients/:id', firewall(['admin', 'worker'], function (req, res) {
+        var client = createClient(req.body, req.params.id);
+
+        validateClient(client).then(function (errors) {
+            if (errors.length) {
+                res.render('clients/edit', {
+                    errors: errors,
+                    client: client,
+                    user: req.user
+                });
+            } else {
+                return when.promise(function (resolve, reject) {
+                    if (!client.password) return resolve();
+                    bcrypt.hash(client.password, 8, function (err, hash) {
+                        if (err) return reject(err);
+                        resolve(hash);
+                    });
+                }).then(function (hash) {
+                    client.password = hash;
+                    return clientDao.update(client);
+                }).then(function () {
+                    res.redirect('/clients');
+                });
+            }
+        });
+    }));
+
     app.get('/join', function (req, res) {
         res.render('auth/join', {
             client: createClient()
@@ -53,14 +145,22 @@ module.exports = function (app) {
     app.post('/join', function (req, res) {
         var client = createClient(req.body);
 
-        validateClient(client).then(function (errors) {
+        validateClient(client, true).then(function (errors) {
             if (errors.length) {
                 res.render('auth/join', {
                     errors: errors,
                     client: client
                 });
             } else {
-                return clientDao.insert(client).then(function () {
+                return when.promise(function (resolve, reject) {
+                    bcrypt.hash(client.password, 8, function (err, hash) {
+                        if (err) return reject(err);
+                        resolve(hash);
+                    });
+                }).then(function (hash) {
+                    client.password = hash;
+                    return clientDao.insert(client);
+                }).then(function () {
                     req.session.username = client.username;
                     res.redirect('/');
                 });

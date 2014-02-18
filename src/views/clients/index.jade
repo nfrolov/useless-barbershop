@@ -1,0 +1,23 @@
+extends ../layout
+block content
+  h1 Clients
+    a.btn.btn-primary.btn-sm(href="/clients/new") Create new
+  if clients.length
+    table.table.table-striped
+      thead
+        tr
+          th(style="width:70px") ID
+          th Name
+          th(style="width:50px")
+      tbody
+        each client in clients
+          tr
+            td= ('00000' + client.id).substring(-5)
+            td
+              a(href="/clients/" + client.id + "/edit")= client.name
+            td
+              form.form-inline(action="/clients/" + client.id method="post")
+                input(type="hidden" name="_method" value="delete")
+                button.btn.btn-danger.btn-xs(type="submit") Delete
+  else
+    .alert.alert-info No clients

@@ -1,0 +1,29 @@
+extends ../layout
+block content
+  h1 Edit: #{client.name}
+  if errors && errors.length
+    .alert.alert-danger
+      ul
+        each error in errors
+          li= error
+  form(action=("/clients/" + client.id) method="post")
+    input(type="hidden" name="_method" value="put")
+    fieldset
+      legend Account
+      .form-group
+        label.control-label(for="input-username") Username
+        input.form-control#input-username(name="username" value=client.username)
+      .form-group
+        label.control-label(for="input-password") Password
+        input.form-control#input-password(name="password" type="password")
+    fieldset
+      legend Client information
+      .form-group
+        label.control-label(for="input-name") Name
+        input.form-control#input-name(name="name" value=client.name)
+      .form-group
+        label.control-label(for="input-phone") Phone
+        input.form-control#input-name(name="phone" value=client.phone)
+    fieldset
+      .form-group
+        button.btn.btn-primary(type="submit") Save changes
