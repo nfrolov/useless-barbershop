@@ -35,6 +35,19 @@ exports.find = function (id) {
     });
 };
 
+exports.findByAbilities = function (abilities) {
+    var selectQuery =
+        ' SELECT w.worker_id AS id, w.name ' +
+        '   FROM worker w ' +
+        '  WHERE $1 <@ ARRAY( SELECT wa.service_id ' +
+        '                       FROM worker_ability wa ' +
+        '                      WHERE wa.worker_id = w.worker_id ) ';
+    var params = [abilities];
+    return query(selectQuery, params).then(function (rows) {
+        return rows || [];
+    });
+};
+
 function saveAbilities(worker_id, abilities) {
     var clearQuery =
         ' DELETE FROM worker_ability ' +

@@ -1,0 +1,54 @@
+extends ../layout
+block content
+
+  h1 Step #{step}
+  h2 Appointment details
+
+  form(action="/schedule-appointment" method="post")
+
+    input(type="hidden" name="step" value=step)
+
+    for service in appointment.services
+      input(type="hidden" name="services[]" value=service)
+    input(type="hidden" name="worker_id" value=appointment.worker_id)
+    input(type="hidden" name="start_time" value=appointment.start_time)
+    input(type="hidden" name="client_name" value=appointment.client_name)
+    input(type="hidden" name="client_phone" value=appointment.client_phone)
+
+    fieldset
+      legend Services
+      for service in services
+        if -1 != appointment.services.indexOf(service.id)
+          .checkbox
+            label
+              input(type="checkbox" checked disabled)
+              | #{service.name} #{service.price} €
+
+    fieldset
+      legend Staff number
+      .radio
+        label
+          input(type="radio" checked disabled)
+          = worker.name
+
+    fieldset
+      legend Date and time
+      p= new Date(appointment.start_time)
+
+    fieldset
+      legend Your details
+      .form-group
+        label.control-label Name
+        input.form-control(disabled value=appointment.client_name)
+      .form-group
+        label.control-label Phone
+        input.form-control(disabled value=appointment.client_phone)
+
+    fieldset
+      legend Additional information
+      .form-group
+        textarea.form-control(name="note" rows="5")
+
+    fieldset
+      .form-group
+        button.btn.btn-primary(type="submit") Confirm

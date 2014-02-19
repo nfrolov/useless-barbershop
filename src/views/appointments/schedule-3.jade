@@ -1,0 +1,25 @@
+extends ../layout
+block content
+  h1 Step #{step}
+  h2 Select a time
+  if errors && errors.length
+    .alert.alert-danger
+      ul
+        each error in errors
+          li= error
+  form(action="/schedule-appointment" method="post")
+    input(type="hidden" name="step" value=step)
+    for service in appointment.services
+      input(type="hidden" name="services[]" value=service)
+    input(type="hidden" name="worker_id" value=appointment.worker_id)
+    if times.length
+      for time in times
+        .radio
+          label
+            input(type="radio" name="start_time" value=time.value)
+            = time.name
+    else
+      .alert.alert-info No free times found
+    fieldset
+      .form-group
+        button.btn.btn-primary(type="submit") Next

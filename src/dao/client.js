@@ -25,6 +25,18 @@ exports.find = function (id) {
     });
 };
 
+exports.findByUsername = function (username) {
+    var selectQuery =
+        ' SELECT client_id AS id, username, name, phone ' +
+        '   FROM client ' +
+        '  WHERE username  = $1 ';
+    var params = [username];
+
+    return query(selectQuery, params).then(function (rows) {
+        return rows && rows[0];
+    });
+};
+
 exports.insert = function (entity) {
     return accountDao.insert(entity).then(function () {
         var insertQuery =

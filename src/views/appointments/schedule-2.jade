@@ -1,0 +1,24 @@
+extends ../layout
+block content
+  h1 Step #{step}
+  h2 Select a staff member
+  if errors && errors.length
+    .alert.alert-danger
+      ul
+        each error in errors
+          li= error
+  form(action="/schedule-appointment" method="post")
+    input(type="hidden" name="step" value=step)
+    for service in appointment.services
+      input(type="hidden" name="services[]" value=service)
+    if workers.length
+      for worker in workers
+        .radio
+          label
+            input(type="radio" name="worker_id" value=worker.id checked=(worker.id == appointment.worker_id))
+            = worker.name
+    else
+      .alert.alert-info No staff members found
+    fieldset
+      .form-group
+        button.btn.btn-primary(type="submit") Next

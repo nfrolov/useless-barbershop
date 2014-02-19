@@ -1,0 +1,19 @@
+extends ../layout
+block content
+  h1 Step #{step}
+  h2 Select services
+  if errors && errors.length
+    .alert.alert-danger
+      ul
+        each error in errors
+          li= error
+  form(action="/schedule-appointment" method="post")
+    input(type="hidden" name="step" value=step)
+    for service in services
+      .checkbox
+        label
+          input(type="checkbox" name="services[]" value=service.id checked=(-1 !== appointment.services.indexOf(service.id)))
+          = service.name
+    fieldset
+      .form-group
+        button.btn.btn-primary(type="submit") Next

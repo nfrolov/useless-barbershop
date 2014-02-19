@@ -1,0 +1,31 @@
+extends ../layout
+block content
+
+  h1 Appointment #{appointment.id}
+
+  dl
+    dt Services
+    dd
+      p
+        for service in appointment.services
+          | #{service.name} #{service.price} €
+          br
+
+    dt Staff number
+    dd
+      p= appointment.worker_name
+
+    dt Date and time
+    dd
+      p= new Date(appointment.start_time)
+
+    dt Your details
+    dd
+      p
+        = appointment.client_name
+        br
+        = appointment.client_phone
+
+    dt Additional information
+    dd
+      p= appointment.note

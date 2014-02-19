@@ -7,3 +7,5 @@ ul.nav.navbar-nav
       li: a(href="/clients") Clients
     if user.role == 'basic'
       li: a(href="/clients") Clients
+  if !user || user.role == 'client'
+    a.btn.btn-default.navbar-btn.navbar-left(href="/schedule-appointment") Schedule appointment

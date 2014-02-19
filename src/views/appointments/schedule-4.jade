@@ -1,0 +1,25 @@
+extends ../layout
+block content
+  h1 Step #{step}
+  h2 Your details
+  if errors && errors.length
+    .alert.alert-danger
+      ul
+        each error in errors
+          li= error
+  form(action="/schedule-appointment" method="post")
+    input(type="hidden" name="step" value=step)
+    for service in appointment.services
+      input(type="hidden" name="services[]" value=service)
+    input(type="hidden" name="worker_id" value=appointment.worker_id)
+    input(type="hidden" name="start_time" value=appointment.start_time)
+    fieldset
+      .form-group
+        label.control-label(for="name") Name
+        input.form-control#name(name="client_name" value=appointment.client_name)
+      .form-group
+        label.control-label(for="phone") Phone
+        input.form-control#phone(name="client_phone" value=appointment.client_phone)
+    fieldset
+      .form-group
+        button.btn.btn-primary(type="submit") Next
