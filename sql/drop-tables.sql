@@ -7,3 +7,5 @@ drop table account;
 drop table service;
 
 drop type worker_role;
+
+drop view time_available;

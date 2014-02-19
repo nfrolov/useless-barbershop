@@ -57,3 +57,41 @@ create table appointment_service (
     price numeric(10,2) not null check (price >= 0),
     primary key (appointment_id, service_id)
 );
+
+create view time_available as
+
+    with
+    time_intervals as (
+            select (interval '30' minute * ti) as start_time
+              from generate_series(0, 47) ti
+    ),
+    all_times as (
+            select (di + ti.start_time) as start_ts, ti.start_time
+              from generate_series(current_date, current_date + interval '1' day, interval '1' day) as di
+        cross join time_intervals as ti
+    ),
+    work_times as (
+            select start_ts, start_time
+              from all_times
+             where start_ts > current_timestamp
+               and start_time >= '09:00'
+               and start_time < '18:00'
+               and extract(dow from start_ts) != 0
+    ),
+    available_times as (
+            select w.worker_id, wt.start_ts
+              from worker as w
+        cross join work_times as wt
+    ),
+    busy_times as (
+            select worker_id, start_time
+              from appointment
+    )
+
+        select at.worker_id, at.start_ts as start_time
+          from available_times as at
+     left join busy_times bt on (bt.worker_id = at.worker_id and bt.start_time = at.start_ts)
+         where bt.worker_id is null
+         order by worker_id, start_ts
+
+    ;
