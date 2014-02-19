@@ -46,7 +46,7 @@ module.exports = function (app) {
         };
     }
 
-    app.get('/clients', firewall(['admin', 'worker'], function (req, res) {
+    app.get('/clients', firewall(['admin', 'basic'], function (req, res) {
         clientDao.findAll().then(function (clients) {
             res.render('clients/index', {
                 clients: clients,
@@ -55,14 +55,14 @@ module.exports = function (app) {
         });
     }));
 
-    app.get('/clients/new', firewall(['admin', 'worker'], function (req, res) {
+    app.get('/clients/new', firewall(['admin', 'basic'], function (req, res) {
         res.render('clients/new', {
             client: createClient(),
             user: req.user
         });
     }));
 
-    app.post('/clients', firewall(['admin', 'worker'], function (req, res) {
+    app.post('/clients', firewall(['admin', 'basic'], function (req, res) {
         var client = createClient(req.body);
 
         validateClient(client, true).then(function (errors) {
@@ -88,13 +88,13 @@ module.exports = function (app) {
         }).catch(handleError(res));
     }));
 
-    app.del('/clients/:id', firewall(['admin', 'worker'], function (req, res) {
+    app.del('/clients/:id', firewall(['admin', 'basic'], function (req, res) {
         clientDao.delete(req.params.id).then(function () {
             res.redirect('/clients');
         }).catch(handleError(res));
     }));
 
-    app.get('/clients/:id/edit', firewall(['admin', 'worker'], function (req, res) {
+    app.get('/clients/:id/edit', firewall(['admin', 'basic'], function (req, res) {
         clientDao.find(req.params.id).then(function (client) {
             if (!client) {
                 res.send(404, 'Client not found');
@@ -109,7 +109,7 @@ module.exports = function (app) {
     }));
 
 
-    app.put('/clients/:id', firewall(['admin', 'worker'], function (req, res) {
+    app.put('/clients/:id', firewall(['admin', 'basic'], function (req, res) {
         var client = createClient(req.body, req.params.id);
 
         validateClient(client).then(function (errors) {
