@@ -8,6 +8,7 @@ block content
           th(style="width:70px") ID
           th(style="width:150px") Time
           th Client
+          th(style="width:250px") Worker
           th(style="width:1%")
       tbody
         each appointment in appointments
@@ -16,6 +17,7 @@ block content
             td= moment(appointment.start_time).format("D MMM YYYY HH:mm")
             td
               a(href="/appointments/" + appointment.id)= appointment.client_name
+            td= appointment.worker_name
             td
               form.form-inline(action="/appointments/" + appointment.id method="post")
                 input(type="hidden" name="_method" value="delete")
