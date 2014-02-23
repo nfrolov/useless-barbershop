@@ -1,6 +1,8 @@
 var express = require('express'),
     app = express();
 
+app.locals.moment = require('moment');
+
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
