@@ -77,6 +77,25 @@ exports.findByWorker = function (worker_id) {
     });
 };
 
+exports.findByClient = function (client_id) {
+    var selectQuery =
+        " SELECT a.appointment_id AS id, a.client_id, " +
+        "        a.worker_id, w.name AS worker_name, " +
+        "        a.client_name, a.client_phone, a.note, " +
+        "        a.start_time, a.end_time, " +
+        "        a.start_time < current_date AS is_past, " +
+        "        a.start_time = current_date AS is_today " +
+        "   FROM appointment a " +
+        "   JOIN worker w ON (w.worker_id = a.worker_id) " +
+        "  WHERE a.client_id = $1 " +
+        "  ORDER BY a.start_time ";
+    var params = [client_id];
+
+    return query(selectQuery, params).then(function (rows) {
+        return rows || [];
+    });
+};
+
 function saveServices(appointment_id, services) {
     var insertQuery =
         ' INSERT INTO appointment_service ' +

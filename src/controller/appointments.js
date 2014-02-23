@@ -52,6 +52,33 @@ module.exports = function (app) {
         }).catch(handleError(res));
     }));
 
+    app.get('/clients/:id/appointments', function (req, res) {
+        var client_id = req.params.id;
+
+        when.resolve().then(function () {
+            if (req.user) {
+                if ('admin' === req.user.role || 'basic' === req.user.role) {
+                    return true;
+                }
+                return clientDao.find(client_id).then(function (client) {
+                    return client && client.username === req.user.username;
+                });
+            }
+            return false;
+        }).then(function (granted) {
+            if (granted) {
+                return appointmentDao.findByClient(client_id).then(function (appointments) {
+                    res.render('appointments/index', {
+                        appointments: appointments,
+                        user: req.user
+                    });
+                });
+            } else {
+                res.status(403).render('auth/denied');
+            }
+        }).catch(handleError(res));
+    });
+
     app.delete('/appointments/:id', function (req, res) {
         var appointment_id = req.params.id;
 

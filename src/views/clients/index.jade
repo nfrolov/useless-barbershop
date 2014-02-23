@@ -8,7 +8,7 @@ block content
         tr
           th(style="width:70px") ID
           th Name
-          th(style="width:50px")
+          th(style="width:200px")
       tbody
         each client in clients
           tr
@@ -16,8 +16,9 @@ block content
             td
               a(href="/clients/" + client.id + "/edit")= client.name
             td
-              form.form-inline(action="/clients/" + client.id method="post")
+              form.form-inline.pull-right(action="/clients/" + client.id method="post")
                 input(type="hidden" name="_method" value="delete")
                 button.btn.btn-danger.btn-xs(type="submit") Delete
+              a.btn.btn-info.btn-xs.pull-right(href="/clients/" + client.id + "/appointments" type="submit") View appointments
   else
     .alert.alert-info No clients
