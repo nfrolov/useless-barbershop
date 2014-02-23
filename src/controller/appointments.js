@@ -31,7 +31,7 @@ module.exports = function (app) {
         };
     }
 
-    app.get('/appointments', firewall(['admin', 'worker'], function (req, res) {
+    app.get('/appointments', firewall(['admin', 'basic'], function (req, res) {
         appointmentDao.findAll().then(function (appointments) {
             res.render('appointments/index', {
                 appointments: appointments,
@@ -48,7 +48,7 @@ module.exports = function (app) {
                 return true;
             }
             if (req.user) {
-                if ('admin' === req.user.role || 'worker' === req.user.role) {
+                if ('admin' === req.user.role || 'basic' === req.user.role) {
                     return true;
                 }
                 return clientDao.findByUsername(req.user.username).then(function (client) {
@@ -199,7 +199,7 @@ module.exports = function (app) {
                     return true;
                 }
                 if (req.user) {
-                    if ('admin' === req.user.role || 'worker' === req.user.role) {
+                    if ('admin' === req.user.role || 'basic' === req.user.role) {
                         return true;
                     }
                     return clientDao.findByUsername(req.user.username).then(function (client) {
