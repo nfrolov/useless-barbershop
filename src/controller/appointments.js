@@ -40,6 +40,17 @@ module.exports = function (app) {
         }).catch(handleError(res));
     }));
 
+    app.get('/workers/:id/appointments', firewall(['admin', 'basic'], function (req, res) {
+        var worker_id = req.params.id;
+
+        appointmentDao.findByWorker(worker_id).then(function (appointments) {
+            res.render('appointments/index', {
+                appointments: appointments,
+                user: req.user
+            });
+        }).catch(handleError(res));
+    }));
+
     app.delete('/appointments/:id', function (req, res) {
         var appointment_id = req.params.id;
 
