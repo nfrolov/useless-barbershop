@@ -6,11 +6,13 @@ block content
     table.table.table-striped
       thead
         tr
+          th(style="width:70px") ID
           th Name
           th(style="width:200px")
       tbody
         each worker in workers
           tr
+            td= ('00000' + worker.id).slice(-5)
             td
               a(href="/workers/" + worker.id + "/edit")= worker.name
             td
