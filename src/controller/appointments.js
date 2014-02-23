@@ -1,4 +1,5 @@
 var when = require('when'),
+    moment = require('moment'),
     firewall = require('../util/firewall'),
     serviceDao = require('../dao/service'),
     workerDao = require('../dao/worker'),
@@ -173,9 +174,10 @@ module.exports = function (app) {
             if (3 === step) {
                 return appointmentDao.findAvailableTimesFor(appointment.worker_id).then(function (times) {
                     locals.times = times.map(function (time) {
+                        var start_time = moment(time.start_time);
                         return {
-                            name: time.start_time.toString(),
-                            value: time.start_time.toISOString()
+                            name: start_time.format('D MMMM, HH:mm'),
+                            value: start_time.format()
                         };
                     });
                     return step;

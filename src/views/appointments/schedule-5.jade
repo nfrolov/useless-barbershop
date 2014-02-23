@@ -33,7 +33,7 @@ block content
 
     fieldset
       legend Date and time
-      p= new Date(appointment.start_time)
+      p= moment(appointment.start_time).format('D MMMM YYYY, HH:mm')
 
     fieldset
       legend Your details
