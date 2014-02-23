@@ -18,7 +18,8 @@ exports.find = function (id) {
     var selectQuery =
         ' SELECT a.appointment_id AS id, a.client_id, ' +
         '        a.worker_id, w.name AS worker_name, ' +
-        '        a.client_name, a.client_phone, a.note ' +
+        '        a.client_name, a.client_phone, a.note, ' +
+        '        a.start_time, a.end_time ' +
         '   FROM appointment a ' +
         '   JOIN worker w ON (w.worker_id = a.worker_id) ' +
         '  WHERE a.appointment_id = $1 ';
@@ -37,6 +38,23 @@ exports.find = function (id) {
             });
         }
         return appointment;
+    });
+};
+
+exports.findAll = function () {
+    var selectQuery =
+        " SELECT a.appointment_id AS id, a.client_id, " +
+        "        a.worker_id, w.name AS worker_name, " +
+        "        a.client_name, a.client_phone, a.note, " +
+        "        a.start_time, a.end_time, " +
+        "        a.start_time < current_date AS is_past, " +
+        "        a.start_time = current_date AS is_today " +
+        "   FROM appointment a " +
+        "   JOIN worker w ON (w.worker_id = a.worker_id) " +
+        "  ORDER BY a.start_time ";
+
+    return query(selectQuery).then(function (rows) {
+        return rows || [];
     });
 };
 
@@ -74,4 +92,13 @@ exports.insert = function (entity) {
     }).then(function () {
         return entity;
     });
+};
+
+exports.delete = function (id) {
+    var deleteQuery =
+        ' DELETE FROM appointment ' +
+        '  WHERE appointment_id = $1 ';
+    var params = [id];
+
+    return query(deleteQuery, params);
 };

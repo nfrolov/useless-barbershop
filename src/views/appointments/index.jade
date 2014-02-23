@@ -1,0 +1,24 @@
+extends ../layout
+block content
+  h1 Workers
+  if appointments.length
+    table.table
+      thead
+        tr
+          th(style="width:70px") ID
+          th(style="width:150px") Time
+          th Client
+          th(style="width:1%")
+      tbody
+        each appointment in appointments
+          tr(class=(appointment.is_past ? "active" : (appointment.is_today ? "success" : "")))
+            td= ('00000' + appointment.id).slice(-5)
+            td= moment(appointment.start_time).format("D MMM YYYY HH:mm")
+            td
+              a(href="/appointments/" + appointment.id)= appointment.client_name
+            td
+              form.form-inline(action="/appointments/" + appointment.id method="post")
+                input(type="hidden" name="_method" value="delete")
+                button.btn.btn-danger.btn-xs(type="submit") Delete
+  else
+    .alert.alert-info No appointments found

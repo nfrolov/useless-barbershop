@@ -1,4 +1,5 @@
 var when = require('when'),
+    firewall = require('../util/firewall'),
     serviceDao = require('../dao/service'),
     workerDao = require('../dao/worker'),
     appointmentDao = require('../dao/appointment'),
@@ -29,6 +30,42 @@ module.exports = function (app) {
             res.send(500, 'Internal Server Error');
         };
     }
+
+    app.get('/appointments', firewall(['admin', 'worker'], function (req, res) {
+        appointmentDao.findAll().then(function (appointments) {
+            res.render('appointments/index', {
+                appointments: appointments,
+                user: req.user
+            });
+        }).catch(handleError(res));
+    }));
+
+    app.delete('/appointments/:id', function (req, res) {
+        var appointment_id = req.params.id;
+
+        appointmentDao.find(appointment_id).then(function (appointment) {
+            if (null === appointment.client_id) {
+                return true;
+            }
+            if (req.user) {
+                if ('admin' === req.user.role || 'worker' === req.user.role) {
+                    return true;
+                }
+                return clientDao.findByUsername(req.user.username).then(function (client) {
+                    return client && client.id == appointment.client_id;
+                });
+            }
+            return false;
+        }).then(function (granted) {
+            if (granted) {
+                appointmentDao.delete(appointment_id).then(function () {
+                    res.redirect('/appointments');
+                });
+            } else {
+                res.status(403).render('auth/denied');
+            }
+        }).catch(handleError(res));
+    });
 
     app.get('/schedule-appointment', function (req, res) {
         serviceDao.findAll().then(function (services) {
