@@ -1,0 +1,36 @@
+extends ../layout
+block content
+
+  h1 Reports
+
+  h2 Daily appointment report
+  table.table.table-condensed
+    colgroup
+      col
+      col(style="width:100px")
+    tbody
+      each month_stats in appointments_daily_stats
+        if month_stats.length
+          tr
+            th(colspan="2")= moment(month_stats[0].date).format('MMMM YYYY')
+          each stats in month_stats
+            tr
+              td= moment(stats.date).format('D MMMM')
+              td.text-right= stats.total_price + ' €'
+
+  h2 Daily worker report
+  table.table.table-condensed
+    colgroup
+      col
+      col
+      col(style="width:100px")
+    tbody
+      each month_stats in workers_daily_stats
+        if month_stats.length
+          tr
+            th(colspan="3")= moment(month_stats[0].date).format('MMMM YYYY')
+          each stats in month_stats
+            tr
+              td= moment(stats.date).format('D MMMM')
+              td= stats.worker_name
+              td.text-right= stats.total_price + ' €'

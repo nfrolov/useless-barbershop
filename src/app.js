@@ -18,6 +18,7 @@ require('./controller/clients')(app);
 require('./controller/services')(app);
 require('./controller/workers')(app);
 require('./controller/appointments')(app);
+require('./controller/reports')(app);
 require('./controller/test')(app);
 
 module.exports = app;
