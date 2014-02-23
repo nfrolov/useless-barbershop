@@ -16,7 +16,7 @@ block content
       for time in times
         .radio
           label
-            input(type="radio" name="start_time" value=time.value)
+            input(type="radio" name="start_time" value=time.value checked=(time.value == appointment.start_time))
             = time.name
     else
       .alert.alert-info No free times found
