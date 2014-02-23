@@ -97,7 +97,7 @@ module.exports = function (app) {
             return false;
         }).then(function (granted) {
             if (granted) {
-                appointmentDao.delete(appointment_id).then(function () {
+                return appointmentDao.delete(appointment_id).then(function () {
                     res.redirect('/appointments');
                 });
             } else {
